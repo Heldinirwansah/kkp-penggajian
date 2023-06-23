@@ -205,9 +205,9 @@ public class Data_Search2 extends javax.swing.JFrame {
 
     private void tblMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMouseClicked
         int tabelKry = tbl.getSelectedRow();
-        fP.nmKry = tbl.getValueAt(tabelKry, 0).toString();
-        fP.nmKry = tbl.getValueAt(tabelKry, 1).toString();
-        fP.jbtKry = tbl.getValueAt(tabelKry, 6).toString();
+        fP.idKry = tbl.getValueAt(tabelKry, 0).toString();
+//        fP.nmKry = tbl.getValueAt(tabelKry, 1).toString();
+//        fP.jbtKry = tbl.getValueAt(tabelKry, 6).toString();
         //fP.golKry = tbl.getValueAt(tabelKry, 7).toString();
         fP.itemTerpilih();
         this.dispose();

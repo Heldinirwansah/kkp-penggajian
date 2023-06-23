@@ -226,7 +226,7 @@ public class Form_Karyawan extends javax.swing.JFrame {
         tid = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
-        jbtt = new javax.swing.JComboBox<String>();
+        jbtt = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -234,7 +234,7 @@ public class Form_Karyawan extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         cr = new javax.swing.JTextField();
         jButton5 = new javax.swing.JButton();
-        ktg = new javax.swing.JComboBox<String>();
+        ktg = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
         jButton7 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -380,7 +380,7 @@ public class Form_Karyawan extends javax.swing.JFrame {
 
         jLabel7.setText("Jabatan");
 
-        jbtt.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Manager Keuangan", "Supir", "Bag Perlengkapan", "Bag Kebersihan", " " }));
+        jbtt.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Manager Keuangan", "Supir", "Bag Perlengkapan", "Bag Kebersihan", " " }));
         jbtt.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jbtt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -464,7 +464,12 @@ public class Form_Karyawan extends javax.swing.JFrame {
             }
         });
 
-        ktg.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "nama", "jabatan", "alamat" }));
+        ktg.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "nama", "jabatan", "alamat" }));
+        ktg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ktgActionPerformed(evt);
+            }
+        });
 
         jLabel11.setText("Kategori");
 
@@ -671,6 +676,10 @@ public class Form_Karyawan extends javax.swing.JFrame {
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         kosong();
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void ktgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ktgActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ktgActionPerformed
 
      protected void kosong(){
         nm.setText("");

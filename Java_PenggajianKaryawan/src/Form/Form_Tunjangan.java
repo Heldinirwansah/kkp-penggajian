@@ -31,8 +31,8 @@ public class Form_Tunjangan extends javax.swing.JFrame {
        
         model = new DefaultTableModel();
         tabeltunjangan.setModel(model);
-        model.addColumn("ID");
-        model.addColumn("nama");
+        model.addColumn("ID Karyawan");
+        model.addColumn("Nama");
         model.addColumn("Jabatan");
         model.addColumn("Tunjangan");
      
@@ -47,19 +47,22 @@ public class Form_Tunjangan extends javax.swing.JFrame {
   public void getData(){
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
-        String k = (String)ktg.getSelectedItem();
-        String c = cr.getText();
+//        String k = (String)ktg.getSelectedItem();
+        String c = "";
+        c = cr.getText();
         try{
             st = (Statement) koneksi.getKoneksi().createStatement();
-            String sql = "SELECT * FROM tunjangan WHERE nama like '%"+c+"%'";
+            String sql = "SELECT t.tunjanganID, k.nama, k.jabatan, sum(t.tunjangan) jumlah_tunjangan FROM tunjangan t, karyawan k "
+                    + "WHERE k.karyawanID = t.karyawanID "
+//                    + "AND k.nama LIKE '%"+c+"%' OR k.jabatan LIKE '%"+c+"%' "
+                    + "GROUP BY k.karyawanID";
             ResultSet res = st.executeQuery(sql);
             while(res.next()){
                 Object[] obj = new Object[4];
-                obj[0] = res.getString("id_karyawan");
+                obj[0] = res.getString("tunjanganID");
                 obj[1] = res.getString("nama");
-                
                 obj[2] = res.getString("jabatan");
-                obj[3] = res.getString("tunjangan");
+                obj[3] = res.getString("jumlah_tunjangan");
 //                obj[4] = res.getString("penilaian");
 //                obj[7] = res.getString("golongan");
                 
@@ -212,7 +215,6 @@ public class Form_Tunjangan extends javax.swing.JFrame {
         tabeltunjangan = new javax.swing.JTable();
         iniclear = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
-        ktg = new javax.swing.JComboBox();
         cr = new javax.swing.JTextField();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
@@ -248,27 +250,27 @@ public class Form_Tunjangan extends javax.swing.JFrame {
 
         jLabel2.setText("Nama");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(290, 180, 60, 16);
+        jLabel2.setBounds(290, 180, 60, 14);
 
         jLabel3.setText("ID Karyawan");
         getContentPane().add(jLabel3);
-        jLabel3.setBounds(290, 130, 90, 16);
+        jLabel3.setBounds(290, 130, 90, 14);
 
         jLabel4.setText("Jabatan");
         getContentPane().add(jLabel4);
-        jLabel4.setBounds(290, 240, 50, 16);
+        jLabel4.setBounds(290, 240, 50, 14);
 
         jLabel5.setText("Tunjangan");
         getContentPane().add(jLabel5);
-        jLabel5.setBounds(280, 290, 80, 16);
+        jLabel5.setBounds(280, 290, 80, 14);
         getContentPane().add(tid);
-        tid.setBounds(420, 130, 100, 22);
+        tid.setBounds(420, 130, 100, 20);
         getContentPane().add(tnama);
-        tnama.setBounds(420, 180, 100, 22);
+        tnama.setBounds(420, 180, 100, 20);
         getContentPane().add(tjabatan);
-        tjabatan.setBounds(420, 240, 100, 22);
+        tjabatan.setBounds(420, 240, 100, 20);
         getContentPane().add(ttunjangan);
-        ttunjangan.setBounds(420, 290, 100, 22);
+        ttunjangan.setBounds(420, 290, 100, 20);
 
         inisave.setText("SAVE");
         inisave.addActionListener(new java.awt.event.ActionListener() {
@@ -336,13 +338,9 @@ public class Form_Tunjangan extends javax.swing.JFrame {
         getContentPane().add(iniclear);
         iniclear.setBounds(570, 285, 80, 30);
 
-        jLabel6.setText("Kategori");
+        jLabel6.setText("Kata Kunci Pencarian");
         getContentPane().add(jLabel6);
-        jLabel6.setBounds(110, 350, 70, 30);
-
-        ktg.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Nama", "Jabatan" }));
-        getContentPane().add(ktg);
-        ktg.setBounds(190, 350, 80, 30);
+        jLabel6.setBounds(160, 350, 110, 30);
         getContentPane().add(cr);
         cr.setBounds(290, 350, 140, 30);
 
@@ -354,7 +352,7 @@ public class Form_Tunjangan extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton6);
-        jButton6.setBounds(700, 270, 153, 25);
+        jButton6.setBounds(700, 270, 137, 25);
 
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/gif/16x16/Refresh.gif"))); // NOI18N
         jButton7.setText("Refresh");
@@ -366,7 +364,7 @@ public class Form_Tunjangan extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton7);
-        jButton7.setBounds(560, 340, 77, 45);
+        jButton7.setBounds(560, 340, 71, 43);
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/gif/16x16/View.gif"))); // NOI18N
         jButton5.setText("Search");
@@ -378,7 +376,7 @@ public class Form_Tunjangan extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton5);
-        jButton5.setBounds(460, 340, 73, 45);
+        jButton5.setBounds(460, 340, 65, 43);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -579,7 +577,6 @@ public class Form_Tunjangan extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JComboBox ktg;
     private javax.swing.JTable tabeltunjangan;
     private javax.swing.JTextField tid;
     private javax.swing.JTextField tjabatan;
