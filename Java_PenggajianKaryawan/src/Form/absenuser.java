@@ -5,6 +5,8 @@
  */
 package Form;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
  * @author ASUS
  */
 public class absenuser extends javax.swing.JFrame {
+
     private DefaultTableModel model;
 
     /**
@@ -28,6 +31,43 @@ public class absenuser extends javax.swing.JFrame {
     public absenuser() {
         initComponents();
         setLocationRelativeTo(null);
+        model = new DefaultTableModel();
+        tbl_absen.setModel(model);
+        model.addColumn("ID Karyawan");
+        model.addColumn("Nama Karyawan");
+        model.addColumn("Jabatan");
+        model.addColumn("Jenis Kelamin");
+        model.addColumn("Jenis Absen");
+        model.addColumn("Waktu Absen");
+        getData();
+//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//        Dimension frameSize = getSize();
+//        setLocation((screenSize.width - frameSize.width)/2,(screenSize.height-frameSize.height)/2);
+    }
+
+    public void getData() {
+        model.getDataVector().removeAllElements();
+        model.fireTableDataChanged();
+        try {
+            st = (Statement) koneksi.getKoneksi().createStatement();
+            String sql =  "select distinct "
+                        + "  p.`karyawanID`, k.nama, k.jabatan, k.jk, jenis_absen, waktu_absen "
+                        + "from presensi p, karyawan k "
+                        + "where p.`karyawanID` = k.`karyawanID`;";
+            ResultSet res = st.executeQuery(sql);
+            while (res.next()) {
+                Object[] obj = new Object[7];
+                obj[0] = res.getString("karyawanID");
+                obj[1] = res.getString("nama");
+                obj[2] = res.getString("jabatan");
+                obj[3] = res.getString("jk");
+                obj[4] = res.getString("jenis_absen");
+                obj[5] = res.getString("waktu_absen");
+                model.addRow(obj);
+            }
+        } catch (SQLException err) {
+            JOptionPane.showMessageDialog(null, err.getMessage());
+        }
     }
 
     /**
@@ -52,7 +92,7 @@ public class absenuser extends javax.swing.JFrame {
         tnama = new javax.swing.JLabel();
         tjbt = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tabelabsenuser = new javax.swing.JTable();
+        tbl_absen = new javax.swing.JTable();
 
         jLabel3.setText("jLabel3");
 
@@ -163,7 +203,7 @@ public class absenuser extends javax.swing.JFrame {
         getContentPane().add(jPanel2);
         jPanel2.setBounds(10, 170, 193, 232);
 
-        tabelabsenuser.setModel(new javax.swing.table.DefaultTableModel(
+        tbl_absen.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -174,15 +214,15 @@ public class absenuser extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tabelabsenuser.addMouseListener(new java.awt.event.MouseAdapter() {
+        tbl_absen.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tabelabsenuserMouseClicked(evt);
+                tbl_absenMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                tabelabsenuserMouseEntered(evt);
+                tbl_absenMouseEntered(evt);
             }
         });
-        jScrollPane1.setViewportView(tabelabsenuser);
+        jScrollPane1.setViewportView(tbl_absen);
 
         getContentPane().add(jScrollPane1);
         jScrollPane1.setBounds(80, 430, 540, 130);
@@ -190,15 +230,15 @@ public class absenuser extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public void selectData(){
-        int i = tabelabsenuser.getSelectedRow();
-        if(i == -1){
+    public void selectData() {
+        int i = tbl_absen.getSelectedRow();
+        if (i == -1) {
             JOptionPane.showMessageDialog(null, "Tidak ada data terpilih!");
             return;
         }
-        tid.setText(""+model.getValueAt(i, 0));
+        tid.setText("" + model.getValueAt(i, 0));
     }
-    
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         new Tampilan_awal().setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -211,36 +251,37 @@ public class absenuser extends javax.swing.JFrame {
         awal.setVisible(true);
     }//GEN-LAST:event_jButton2MouseClicked
 
-    protected void datatable(String karyawanId){
-        Object[] Baris ={"Waktu Absen","Jenis Absen","Nama Karyawan","Karyawan ID"  
+    protected void datatable(String karyawanId) {
+        Object[] Baris = {"Waktu Absen", "Jenis Absen", "Nama Karyawan", "Karyawan ID"
         };
         model = new DefaultTableModel(null, Baris);
-        tabelabsenuser.setModel(model);
-        String sql= "select p.waktu_absen, p.jenis_absen, k.nama, k.jabatan, k.karyawanID from karyawan k, presensi p"
+        tbl_absen.setModel(model);
+        String sql = "select p.waktu_absen, p.jenis_absen, k.nama, k.jabatan, k.karyawanID from karyawan k, presensi p"
                 + "where k.karyawanID = p.karyawanID and k.karyawanID = " + karyawanId;
-        try{
+        try {
             st = (Statement) koneksi.getKoneksi().createStatement();
             ResultSet hasil = st.executeQuery(sql);
-            while(hasil.next()){
+            while (hasil.next()) {
                 String a = hasil.getString("waktu_absen");
                 String b = hasil.getString("jenis_absen");
                 String c = hasil.getString("nama_karyawan");
                 String d = hasil.getString("jabatan");
                 String e = hasil.getString("karyawanID");
-                
-                String[] data ={a,b,c,d,e};
+
+                String[] data = {a, b, c, d, e};
                 model.addRow(data);
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
+
     private void bcariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bcariActionPerformed
         // TODO add your handling code here:
         getKaryawan(tid.getText());
-        if (tid.getText())
-        datatable(tid.getText());
+        if (tid.getText()) {
+            datatable(tid.getText());
+        }
     }//GEN-LAST:event_bcariActionPerformed
 
     private void tidKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tidKeyPressed
@@ -257,22 +298,23 @@ public class absenuser extends javax.swing.JFrame {
         absenNow();
     }//GEN-LAST:event_bsubmitActionPerformed
 
-    private void tabelabsenuserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelabsenuserMouseClicked
+    private void tbl_absenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_absenMouseClicked
         // TODO add your handling code here:
 //        selectData();
-        
-        int rows = tabelabsenuser.getSelectedRow();
-        String a = model.getValueAt(rows,0).toString();
-    }//GEN-LAST:event_tabelabsenuserMouseClicked
 
-    private void tabelabsenuserMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelabsenuserMouseEntered
+        int rows = tbl_absen.getSelectedRow();
+        String a = model.getValueAt(rows, 0).toString();
+    }//GEN-LAST:event_tbl_absenMouseClicked
+
+    private void tbl_absenMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_absenMouseEntered
         // TODO add your handling code here:
-    }//GEN-LAST:event_tabelabsenuserMouseEntered
+    }//GEN-LAST:event_tbl_absenMouseEntered
 
     private String nip, absenOpt;
-    public void loadData(){
+
+    public void loadData() {
         nip = tid.getText();
-        absenOpt = (String)absenOption.getSelectedItem();
+        absenOpt = (String) absenOption.getSelectedItem();
         //vGol = (String)gol.getSelectedItem();
     }
     private static Statement st;
@@ -301,7 +343,7 @@ public class absenuser extends javax.swing.JFrame {
             st = (Statement) koneksi.getKoneksi().createStatement();
 //        String sql = "Insert into karyawan(nama,tgl_lahir,jk,alamat,noHP,jabatan,golongan)"
 //                +"values('"+vNm+"','"+vTgl+"','"+vJk+"','"+vAl+"','"+vHp+"','"+vJbt+"','"+vGol+"')";
-            String sql = "Insert into presensi(waktu_absen, jenis_absen, karyawanID) values (now(), '"+absenOpt+"', '"+nip+"')";
+            String sql = "Insert into presensi(waktu_absen, jenis_absen, karyawanID) values (now(), '" + absenOpt + "', '" + nip + "')";
             PreparedStatement p = (PreparedStatement) koneksi.getKoneksi().prepareStatement(sql);
             p.executeUpdate(sql);
             tid.requestFocus();
@@ -311,10 +353,10 @@ public class absenuser extends javax.swing.JFrame {
         }
     }
 
-/**
- * @param args the command line arguments
- */
-public static void main(String args[]) {
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -325,32 +367,21 @@ public static void main(String args[]) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-                
 
-}
+                }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(absenuser.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } 
-
-catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(absenuser.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } 
-
-catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(absenuser.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } 
-
-catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(absenuser.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(absenuser.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(absenuser.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(absenuser.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(absenuser.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -373,7 +404,7 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tabelabsenuser;
+    private javax.swing.JTable tbl_absen;
     private javax.swing.JTextField tid;
     private javax.swing.JLabel tjbt;
     private javax.swing.JLabel tnama;

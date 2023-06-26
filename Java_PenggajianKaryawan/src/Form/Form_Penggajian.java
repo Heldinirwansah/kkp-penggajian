@@ -84,7 +84,7 @@ public class Form_Penggajian extends javax.swing.JFrame {
         if (k == "gaji_bersih") {
             t = "p";
         }
-        try{
+        try {
             st = (Statement) koneksi.getKoneksi().createStatement();
             String sql = "SELECT gajiID, tgl, k.nama, k.jabatan, gapok, potongan, gaji_bersih"
                     + ", (SELECT sum(t.tunjangan) tunjangan FROM tunjangan t WHERE karyawanID = p.karyawanID GROUP BY karyawanID ) as tunjangan "
