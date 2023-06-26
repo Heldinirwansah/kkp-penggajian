@@ -44,6 +44,18 @@ public class absenuser extends javax.swing.JFrame {
 //        Dimension frameSize = getSize();
 //        setLocation((screenSize.width - frameSize.width)/2,(screenSize.height-frameSize.height)/2);
     }
+    
+    
+    public String idKry;
+    public String getID() {
+        return idKry.toString();
+    }
+    
+    public void itemTerpilih(){                              
+        Data_Search6 DS = new Data_Search6();
+        DS.au = this;
+        tid.setText(idKry);
+    }
 
     public void getData() {
         model.getDataVector().removeAllElements();
@@ -53,7 +65,7 @@ public class absenuser extends javax.swing.JFrame {
             String sql =  "select distinct "
                         + "  p.`karyawanID`, k.nama, k.jabatan, k.jk, jenis_absen, waktu_absen "
                         + "from presensi p, karyawan k "
-                        + "where p.`karyawanID` = k.`karyawanID`;";
+                        + "where p.`karyawanID` = k.`karyawanID` order by waktu_absen desc;";
             ResultSet res = st.executeQuery(sql);
             while (res.next()) {
                 Object[] obj = new Object[7];
@@ -93,6 +105,7 @@ public class absenuser extends javax.swing.JFrame {
         tjbt = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_absen = new javax.swing.JTable();
+        searchKaryawanButton = new javax.swing.JButton();
 
         jLabel3.setText("jLabel3");
 
@@ -102,7 +115,7 @@ public class absenuser extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel1.setText("MASUKAN ID KARYAWAN");
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(320, 100, 214, 22);
+        jLabel1.setBounds(230, 120, 214, 22);
 
         tid.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -114,7 +127,7 @@ public class absenuser extends javax.swing.JFrame {
 
         absenOption.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Masuk", "Keluar" }));
         getContentPane().add(absenOption);
-        absenOption.setBounds(290, 210, 90, 22);
+        absenOption.setBounds(270, 210, 90, 22);
 
         bsubmit.setText("SUBMIT");
         bsubmit.addActionListener(new java.awt.event.ActionListener() {
@@ -123,7 +136,7 @@ public class absenuser extends javax.swing.JFrame {
             }
         });
         getContentPane().add(bsubmit);
-        bsubmit.setBounds(260, 270, 89, 40);
+        bsubmit.setBounds(270, 250, 89, 40);
 
         jButton2.setText("HOME");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -227,6 +240,16 @@ public class absenuser extends javax.swing.JFrame {
         getContentPane().add(jScrollPane1);
         jScrollPane1.setBounds(80, 430, 540, 130);
 
+        searchKaryawanButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/gif/16x16/Text preview.gif"))); // NOI18N
+        searchKaryawanButton.setText("Search Karyawan");
+        searchKaryawanButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchKaryawanButtonActionPerformed(evt);
+            }
+        });
+        getContentPane().add(searchKaryawanButton);
+        searchKaryawanButton.setBounds(470, 160, 153, 25);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -279,9 +302,7 @@ public class absenuser extends javax.swing.JFrame {
     private void bcariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bcariActionPerformed
         // TODO add your handling code here:
         getKaryawan(tid.getText());
-        if (tid.getText()) {
-            datatable(tid.getText());
-        }
+        
     }//GEN-LAST:event_bcariActionPerformed
 
     private void tidKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tidKeyPressed
@@ -296,6 +317,7 @@ public class absenuser extends javax.swing.JFrame {
     private void bsubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bsubmitActionPerformed
         // TODO add your handling code here:
         absenNow();
+        getData();
     }//GEN-LAST:event_bsubmitActionPerformed
 
     private void tbl_absenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_absenMouseClicked
@@ -310,12 +332,19 @@ public class absenuser extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tbl_absenMouseEntered
 
+    private void searchKaryawanButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchKaryawanButtonActionPerformed
+        Data_Search6 DS = new Data_Search6();
+        DS.au = this;
+        DS.setVisible(true);
+        DS.setResizable(false);
+        tid.requestFocus();
+    }//GEN-LAST:event_searchKaryawanButtonActionPerformed
+
     private String nip, absenOpt;
 
     public void loadData() {
         nip = tid.getText();
         absenOpt = (String) absenOption.getSelectedItem();
-        //vGol = (String)gol.getSelectedItem();
     }
     private static Statement st;
 
@@ -343,6 +372,7 @@ public class absenuser extends javax.swing.JFrame {
             st = (Statement) koneksi.getKoneksi().createStatement();
 //        String sql = "Insert into karyawan(nama,tgl_lahir,jk,alamat,noHP,jabatan,golongan)"
 //                +"values('"+vNm+"','"+vTgl+"','"+vJk+"','"+vAl+"','"+vHp+"','"+vJbt+"','"+vGol+"')";
+            System.out.println(absenOpt);
             String sql = "Insert into presensi(waktu_absen, jenis_absen, karyawanID) values (now(), '" + absenOpt + "', '" + nip + "')";
             PreparedStatement p = (PreparedStatement) koneksi.getKoneksi().prepareStatement(sql);
             p.executeUpdate(sql);
@@ -404,6 +434,7 @@ public class absenuser extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton searchKaryawanButton;
     private javax.swing.JTable tbl_absen;
     private javax.swing.JTextField tid;
     private javax.swing.JLabel tjbt;
